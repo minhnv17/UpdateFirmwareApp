@@ -25,7 +25,7 @@ typedef struct
     uint16_t checkSum;
 } Com_Message_struct_t;
 
-void DoPackMsg(uint8_t *buffer, Com_Message_struct_t *data);
+uint16_t DoPackMsg(uint8_t *buffer, Com_Message_struct_t *data);
 uint16_t DoUnPackMsg(Com_Message_struct_t *data, uint8_t *buffer);
 
 #endif

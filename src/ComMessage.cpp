@@ -3,17 +3,26 @@
 #define COM_MSG_START_DETECT 0xAA
 #define COM_MSG_END_DETECT 0xBB
 
-void DoPackMsg(uint8_t *buffer, Com_Message_struct_t *data)
+uint16_t DoPackMsg(uint8_t *buffer, Com_Message_struct_t *data)
 {
+    uint16_t byteCount = 0U;
     uint16_t payloadLen;
     payloadLen = data->dataLen + data->adrLen;
-    buffer[0] = COM_MSG_START_DETECT;
-    buffer[1] = data->msgId;
-    buffer[2] = data->adrLen;
-    buffer[3] = data->dataLen;
-    memcpy(&buffer[4], data->payload, payloadLen);
-    memcpy(&buffer[payloadLen + 4], &data->checkSum, 2);
-    buffer[payloadLen + 6] = COM_MSG_END_DETECT;
+    buffer[byteCount] = COM_MSG_START_DETECT;
+    byteCount++;
+    buffer[byteCount] = data->msgId;
+    byteCount++;
+    buffer[byteCount] = data->adrLen;
+    byteCount++;
+    buffer[byteCount] = data->dataLen;
+    byteCount++;
+    memcpy(&buffer[byteCount], data->payload, payloadLen);
+    byteCount += payloadLen;
+    memcpy(&buffer[byteCount], &data->checkSum, 2);
+    byteCount += 2U;
+    buffer[byteCount] = COM_MSG_END_DETECT;
+    byteCount++;
+    return byteCount;
 }
 
 uint16_t DoUnPackMsg(Com_Message_struct_t *data, uint8_t *buffer)
